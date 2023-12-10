@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import re
+import math
 
 class Number:
     def __init__(self):
@@ -8,7 +9,11 @@ class Number:
         self.end = -1
 
 class Symbol:
-    position = -1
+    def __init(self):
+        self.position = -1
+        self.value = '.'
+    def is_star(self) -> bool:
+        return self.value=='*'
 
 class Schematic:
     def __init__(self):
@@ -16,23 +21,28 @@ class Schematic:
         self.symbols=[]
         self.partsum=0
         self.size=0
+        self.ratiosum=0
     def insert_number(self, value: int, start: int, end: int, line: int):
         n = Number()
         n.value=value
         n.start=start
         n.end=end
         self.numbers.append((line,n))
-    def insert_symbol(self, position: int, line: int):
+    def insert_symbol(self, value: str, position: int, line: int):
         s = Symbol()
         s.position=position
+        s.value=value
         self.symbols.append((line,s))
     def adjacent(self):
-        for l,n in self.numbers:
-            for sl,sp in self.symbols:
-                if sl==l and (sp.position==(n.start-1) or sp.position==(n.end)):
+        for sl,sp in self.symbols:
+            gear = []
+            for l,n in self.numbers:
+                if abs(sl-l)<=1 and sp.position>=(n.start-1) and sp.position<=(n.end):
                     self.partsum+=n.value
-                elif abs(sl-l)==1 and sp.position>=(n.start-1) and sp.position<=(n.end):
-                    self.partsum+=n.value
+                    if sp.is_star():
+                        gear.append(n.value)
+            if len(gear)>1:
+                self.ratiosum+=math.prod(gear)
 
 def main():
     digit_pattern = re.compile(r"\d+")
@@ -48,11 +58,12 @@ def main():
             for match in digit_pattern.finditer(line):
                 schema.insert_number(value=int(match.group()),start=match.start(),end=match.end(), line=line_number)
             for match in symbol_pattern.finditer(line):
-                schema.insert_symbol(position=match.start(), line=line_number)
+                schema.insert_symbol(value=match.group(), position=match.start(), line=line_number)
             line = reader.readline()
             line_number += 1
     schema.adjacent()
     print(f"Part number sum: {schema.partsum}")
+    print(f"Ratio sum: {schema.ratiosum}")
 
 if __name__ == "__main__":
     main()
