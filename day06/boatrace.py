@@ -5,8 +5,13 @@
 # BDIST=[ 9, 40, 200 ]
 
 # input data
-BTIME=[ 49, 97, 94, 94 ]
-BDIST=[ 263, 1532, 1378, 1851]
+# BTIME=[ 49, 97, 94, 94 ]
+# BDIST=[ 263, 1532, 1378, 1851]
+
+# BTIME=[71530]
+# BDIST=[940200]
+BTIME=[49979494]
+BDIST=[263153213781851]
 def main():
     winning_product=1
     for pos, btime in enumerate(BTIME):
