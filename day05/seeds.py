@@ -46,7 +46,7 @@ def main():
 
     locations = []
     for seed in seeds:
-        #print(f"-- Seed: {seed} --")
+        print(f"-- Seed: {seed} --")
         orig = seed
         trans = -1
         for map_name, map_list in maps.items():
@@ -56,10 +56,11 @@ def main():
                     break
             if trans == -1:
                 trans = orig
-            #print(f"{map_name} {orig} -> {trans}")
+            print(f"{map_name} {orig} -> {trans}")
             orig = trans
         locations.append(trans)
-    print(locations)
+#    for (i, item) in enumerate(locations):
+#        print(f"{i+1} {item}")
     locations.sort()
     print(locations[0])
 
