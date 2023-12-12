@@ -1,47 +1,50 @@
 #!/usr/bin/env python3
 
+
 class TranslationMap:
     def __init__(self, src: int, dst: int, span: int):
         self.src = src
         self.dst = dst
         self.span = span
+
     def translate(self, num: int) -> int:
-        if num>=self.src and num<self.src+self.span:
-            return num-self.src+self.dst
+        if num >= self.src and num < self.src + self.span:
+            return num - self.src + self.dst
         else:
             return -1
 
+
 def main():
     maps = {
-        'seed-to-soil': [],
-        'soil-to-fertilizer': [],
-        'fertilizer-to-water': [],
-        'water-to-light': [],
-        'light-to-temperature': [],
-        'temperature-to-humidity': [],
-        'humidity-to-location': [],
+        "seed-to-soil": [],
+        "soil-to-fertilizer": [],
+        "fertilizer-to-water": [],
+        "water-to-light": [],
+        "light-to-temperature": [],
+        "temperature-to-humidity": [],
+        "humidity-to-location": [],
     }
     for map_name, map_list in maps.items():
-        with open(f'{map_name}.map', 'r') as reader:
+        with open(f"{map_name}.map", "r") as reader:
             line = reader.readline()
-            while line != '':  # The EOF char is an empty string
+            while line != "":  # The EOF char is an empty string
                 line = line.rstrip()
                 translation = TranslationMap(
-                    src = int(line.split(" ")[1]),
-                    dst = int(line.split(" ")[0]),
-                    span = int(line.split(" ")[2])
+                    src=int(line.split(" ")[1]),
+                    dst=int(line.split(" ")[0]),
+                    span=int(line.split(" ")[2]),
                 )
                 map_list.append(translation)
                 line = reader.readline()
 
-    with open('seeds.map', 'r') as reader:
+    with open("seeds.map", "r") as reader:
         seeds = []
         line = reader.readline()
-        while line != '':  # The EOF char is an empty string
+        while line != "":  # The EOF char is an empty string
             line = line.rstrip()
             for x in line.split(" "):
-                if x!='':
-                    seeds.append(int(x)) 
+                if x != "":
+                    seeds.append(int(x))
             line = reader.readline()
 
     locations = []
@@ -59,10 +62,11 @@ def main():
             print(f"{map_name} {orig} -> {trans}")
             orig = trans
         locations.append(trans)
-#    for (i, item) in enumerate(locations):
-#        print(f"{i+1} {item}")
+    #    for (i, item) in enumerate(locations):
+    #        print(f"{i+1} {item}")
     locations.sort()
     print(locations[0])
+
 
 if __name__ == "__main__":
     main()

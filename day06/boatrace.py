@@ -10,19 +10,22 @@
 
 # BTIME=[71530]
 # BDIST=[940200]
-BTIME=[49979494]
-BDIST=[263153213781851]
+BTIME = [49979494]
+BDIST = [263153213781851]
+
+
 def main():
-    winning_product=1
+    winning_product = 1
     for pos, btime in enumerate(BTIME):
-        bdist=BDIST[pos]
+        bdist = BDIST[pos]
         print(f"Time: {btime}")
-        winning_count=0
+        winning_count = 0
         for speed in range(1, btime):
-            if speed*(btime-speed)>bdist:
-                winning_count+=1
-        winning_product*=winning_count
+            if speed * (btime - speed) > bdist:
+                winning_count += 1
+        winning_product *= winning_count
     print(f"{winning_product}")
+
 
 if __name__ == "__main__":
     main()
