@@ -80,7 +80,7 @@ class Hand:
     def __str__(self):
         return "".join([c.value for c in self.cards])
 def main():
-    with open('example', 'r') as reader:
+    with open('input', 'r') as reader:
         line = reader.readline()
         hands = []
         while line != '':  # The EOF char is an empty string
