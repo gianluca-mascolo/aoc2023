@@ -17,12 +17,24 @@ class Card:
         return DECK.index(self.value)>DECK.index(other.value)
     def __ge__(self, other):
         return DECK.index(self.value)>=DECK.index(other.value)
+    def integer(self) -> int:
+        return DECK.index(self.value)
 
 class Hand:
-    def __init__(self, cards: list[Card]):
+    def __init__(self, cards: list[Card], bid: int):
         assert len(cards)==5
         self.cards = [c for c in cards]
-    def kind(self):
+        self.bid = bid
+
+    def strength(self) -> int:
+        s = 0
+        deck_base = len(DECK)
+        for p,c in enumerate(self.cards):
+            s+=c.integer()*(deck_base**(4-p))
+        s+=self.__kind()*(deck_base**5)
+        return s
+        
+    def __kind(self) -> int:
         card_groups = {}
         for card in self.cards:
             if card.value in card_groups:
@@ -30,45 +42,61 @@ class Hand:
             else:
                 card_groups[card.value]=1
         if len(card_groups)==1:
-            print("Five of a kind")
+            # Five of a kind
+            return 7
         elif len(card_groups)==2:
             if max(card_groups.values())==4:
-                print("Four of a kind")
+                # Four of a kind
+                return 6
             else:
-                print("Full House")
+                # Full House
+                return 5
         elif len(card_groups)==3:
             if max(card_groups.values())==3:
-                print("Three of a kind")
+                # Three of a kind
+                return 4
             else:
-                print("Two pairs")
+                # Two pairs
+                return 3
         elif len(card_groups)==4:
-            print("One Pair")
-        elif len(card_groups)==5:
-            print("High Card")
+            # One Pair
+            return 2
+        else:
+            # High Card
+            return 1
 
-        return card_groups
-
+    def __lt__(self, other):
+        return self.strength()<other.strength()
+    def __le__(self, other):
+        return self.strength()<=other.strength()
+    def __eq__(self, other):
+        return self.strength()==other.strength()
+    def __ne__(self, other):
+        return self.strength()!=other.strength()
+    def __gt__(self, other):
+        return self.strength()>other.strength()
+    def __ge__(self, other):
+        return self.strength()>=other.strength()
+    def __str__(self):
+        return "".join([c.value for c in self.cards])
 def main():
     with open('example', 'r') as reader:
         line = reader.readline()
+        hands = []
         while line != '':  # The EOF char is an empty string
             line = line.rstrip()
-            print(line)
+            hands.append(
+                Hand(
+                    cards = [Card(c) for c in line.split(" ")[0]],
+                    bid = int(line.split(" ")[1])
+                )
+            )
             line = reader.readline()
+    hands.sort()
+    handsum=0
+    for i,hand in enumerate(hands):
+        handsum+=(i+1)*hand.bid
+    print(handsum)
 
-    c1 = Card("A")
-    c2 = Card("Q")
-    c3 = Card("8")
-    c4 = Card("9")
-    c5 = Card("T")
-    print(c1<c2)
-    print(c3!=c1)
-    print(c1==c4)
-    hand = Hand([c1,c2,c3,c4,c5])
-    print([ c.value for c in hand.cards])
-    hand.cards.sort()
-    print([ c.value for c in hand.cards])
-    print(hand.kind())
-    print(max(hand.kind().values()))
 if __name__ == "__main__":
     main()
