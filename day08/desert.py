@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 def main():
-    with open("input.parsed", "r") as reader:
+    with open("example.parsed", "r") as reader:
         line = reader.readline()
         line.rstrip()
         directions = [d == "R" for d in list(line) if d == "R" or d == "L"]
@@ -14,7 +14,7 @@ def main():
         count = 0
         index = 0
         while step != "ZZZ":
-            print(nodes[step])
+            print(f"{step} -> {nodes[step][directions[index]]}")
             step = nodes[step][directions[index]]
             count += 1
             index += 1

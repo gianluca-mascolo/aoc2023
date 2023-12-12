@@ -1,3 +1,5 @@
-cat example | sed -re 's/[ ()]+//g' | grep -v ^$ > example.parsed
-cat example2 | sed -re 's/[ ()]+//g' | grep -v ^$ > example2.parsed
-cat input | sed -re 's/[ ()]+//g' | grep -v ^$ > input.parsed
+#!/bin/bash
+
+for FILE in example example2 example3 input; do
+    [ -f "$FILE" ] &&  cat "$FILE" | sed -re 's/[ ()]+//g' | grep -v ^$ > "${FILE}.parsed"
+done
