@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import math
 
 
 class NodeMap:
@@ -31,16 +32,28 @@ def main():
             line = line.rstrip()
             nodes[line.split("=")[0]] = tuple(line.split("=")[1].split(","))
             line = reader.readline()
-        current_node = "AAA"
-        node_map = NodeMap(nodes=nodes, start=current_node, directions=directions)
-        node_iter = iter(node_map)
-        steps = 0
-        while current_node != "ZZZ":
-            print(f"{current_node} -> ", end="")
-            current_node = next(node_iter)
-            print(current_node)
-            steps += 1
-        print(steps)
+    current = [n for n in nodes.keys() if n.endswith("A")]
+    node_iters = []
+    for nd in current:
+        node_iters.append(iter(NodeMap(nodes=nodes, start=nd, directions=directions)))
+    steps = 0
+    ends_with_z = [-1] * len(current)  # record the first step number that ends with a 'Z' for each track
+    stop_cycle = False
+    while not stop_cycle:
+        msg = " ".join(current)
+        print(f"[{steps}] {msg} -> ", end="")
+        for idx, node_iter in enumerate(node_iters):
+            if ends_with_z[idx] == -1:
+                current[idx] = next(node_iter)
+                if current[idx].endswith("Z"):
+                    ends_with_z[idx] = steps + 1
+        msg = " ".join(current)
+        print(msg)
+        steps += 1
+        stop_cycle = True
+        for q in [x != -1 for x in ends_with_z]:
+            stop_cycle = stop_cycle and q
+    print(math.lcm(*ends_with_z))
 
 
 if __name__ == "__main__":
