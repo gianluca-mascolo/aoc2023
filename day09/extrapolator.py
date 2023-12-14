@@ -3,26 +3,24 @@ from itertools import pairwise
 
 
 def stepdiff(seq: list):
-    all_zero = True
-    for q in [x == 0 for x in seq]:
-        all_zero = all_zero and q
-    if not all_zero:
+    if not all([x == 0 for x in seq]):
         r = stepdiff([y - x for x, y in pairwise(seq)])
-        return seq[-1] + r
+        return (seq[0] - r[0], seq[-1] + r[1])
     else:
-        return seq[-1]
+        return (0, 0)
 
 
 def main():
-    histsum = 0
+    histsum = [0, 0]
     with open("input", "r") as reader:
         line = reader.readline()
         while line != "":
             line = line.rstrip()
             oasis = [int(x) for x in line.split(" ")]
-            histsum += stepdiff(oasis)
+            histsum[0] += stepdiff(oasis)[0]
+            histsum[1] += stepdiff(oasis)[1]
             line = reader.readline()
-        print(histsum)
+        print(f"nextsum: {histsum[1]}, prev_sum: {histsum[0]}")
 
 
 if __name__ == "__main__":
