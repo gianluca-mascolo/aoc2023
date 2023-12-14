@@ -17,8 +17,7 @@ def main():
         while line != "":
             line = line.rstrip()
             oasis = [int(x) for x in line.split(" ")]
-            histsum[0] += stepdiff(oasis)[0]
-            histsum[1] += stepdiff(oasis)[1]
+            histsum = [x + y for x, y in zip(histsum, list(stepdiff(oasis)))]
             line = reader.readline()
         print(f"nextsum: {histsum[1]}, prev_sum: {histsum[0]}")
 
