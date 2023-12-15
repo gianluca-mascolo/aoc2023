@@ -43,33 +43,34 @@ def main():
         if num_connections == 2:
             break
     printmap(labyrinth_map)
-    print(x,y)
+    print(x, y)
     walk_to = list(PIPES[labyrinth_map[y][x]])[0]
     steps = 0
     nx = x
     ny = y
     while True:
         print(f"[{steps}] {walk_to} -> ", end="")
-        if walk_to == 'east':
+        if walk_to == "east":
             dx = 1
             dy = 0
-        elif walk_to == 'north':
+        elif walk_to == "north":
             dy = -1
             dx = 0
-        elif walk_to == 'south':
+        elif walk_to == "south":
             dx = 0
             dy = 1
-        elif walk_to == 'west':
+        elif walk_to == "west":
             dx = -1
             dy = 0
         nx += dx
         ny += dy
-        walk_to = list(PIPES[labyrinth_map[ny][nx]]-{CONNECTIONS[walk_to]})[0]
+        walk_to = list(PIPES[labyrinth_map[ny][nx]] - {CONNECTIONS[walk_to]})[0]
         print(f"{walk_to} {nx} {ny} ({x} {y})")
         if nx == x and ny == y:
             break
         steps += 1
-    print(int((steps+1)/2))
+    print(int((steps + 1) / 2))
+
 
 if __name__ == "__main__":
     main()
