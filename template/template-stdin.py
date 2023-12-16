@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import sys
 
+
 def main():
     while line := sys.stdin.readline():
         line = line.rstrip()

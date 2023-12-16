@@ -80,7 +80,7 @@ def main():
             labyrinth.map.append(node)
         y += 1
     labyrinth.sizey = y
-    labyrinth.sizex = x+1
+    labyrinth.sizex = x + 1
     start_node = labyrinth.findstart()
     sx = start_node.coord["x"]
     sy = start_node.coord["y"]

@@ -1,4 +1,4 @@
-part 1
+## part 1
 ./expand.sh < input | ./galaxy.py
 
 looking at the example please note that
@@ -32,3 +32,8 @@ is equivalent to
 .#.......7...
 8####9.......
 ```
+
+## part 2
+
+rewrite of part1 with parameters (-s for size of empty row/cols and -p to print some debug info)
+./explode.py -s 2 -p < example
