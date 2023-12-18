@@ -1,7 +1,8 @@
 ## Part 1
 
-`./repair.sh example`
-it will generate a binary-table file with the necessary number of bits (20 in my input) containing all possible values of combinations.
+`./repair.sh example`  
+
+It will generate a binary-table(*) file with the necessary number of bits (20 in my input) containing all possible values of combinations.
 Then the input is interpreted with . = 0 and # = 1 and filtered with grep.
 
 ```
@@ -19,4 +20,16 @@ Matches: 4
 Processing line 6 of 25 (12 bits)
 Matches: 10
 Damaged: 21
+```
+
+(*) a table containing all possible numbers expressed in binary. The file is in ASCII text format. i.e.
+```
+000
+001
+010
+011
+100
+101
+110
+111
 ```
