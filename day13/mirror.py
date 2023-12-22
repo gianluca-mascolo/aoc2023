@@ -60,8 +60,8 @@ def main():
             if line == "":
                 print(f"Valley {count}")
                 print("")
-                vertical = reflection(valley=valley,flipped=False) or reflection(valley=flip(valley),flipped=True)
-                horizontal = reflection(valley=transpose(valley),flipped=False) or reflection(valley=flip(transpose(valley)),flipped=True)
+                vertical = reflection(valley=valley, flipped=False) or reflection(valley=flip(valley), flipped=True)
+                horizontal = reflection(valley=transpose(valley), flipped=False) or reflection(valley=flip(transpose(valley)), flipped=True)
                 printmap(valley, horizontal, vertical)
                 print("")
                 print(f"reflect vertical: {vertical} horizontal: {horizontal}")
