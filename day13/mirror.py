@@ -22,7 +22,7 @@ def reflection(valley: list):
             for dc in range(int((rowlen - seek) / 2)):
                 is_mirror.append(line[seek + dc] == line[rowlen - dc - 1])
         if all(is_mirror):
-            return int(seek + (rowlen - seek) / 2)
+            return int((seek + rowlen) / 2)
     return 0
 
 
