@@ -16,19 +16,13 @@ def printmap(valley: list,horizontal:int,vertical:int):
 
 def reflection(valley: list):
     rowlen = len(valley[0])
-    for seek in range(rowlen-1):
+    for seek in range(rowlen%2,rowlen-1,2):
         is_mirror=[]
         for line in valley:
-            for column in range(rowlen-seek):
-                if seek+column == rowlen-column-1:
-                    is_mirror.append(False)
-                    break
-                if seek+column > rowlen-column-1:
-                    mirror_col = seek+column
-                    break
-                is_mirror.append(line[seek+column]==line[rowlen-column-1])
+            for dc in range(int((rowlen-seek)/2)):
+                is_mirror.append(line[seek+dc]==line[rowlen-dc-1])
         if all(is_mirror):
-            return mirror_col
+            return int(seek+(rowlen-seek)/2)
     return 0
 
 def transpose(valley: list):
