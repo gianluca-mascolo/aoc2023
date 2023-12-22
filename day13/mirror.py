@@ -1,42 +1,43 @@
 #!/usr/bin/env python3
 
-CHARS = {'.','#'}
 
-def printmap(valley: list,horizontal:int,vertical:int):
+def printmap(valley: list, horizontal: int, vertical: int):
     pmap = []
     for line in valley:
         pmap.append(line.copy())
-    for y,line in enumerate(pmap):
-        if horizontal>0 and y==horizontal:
-            print('\u2550'*len(line))
-        msg=[str(c) for c in line]
-        if vertical>0:
-            msg.insert(vertical,'\u2551')
+    for y, line in enumerate(pmap):
+        if horizontal > 0 and y == horizontal:
+            print("\u2550" * len(line))
+        msg = [str(c) for c in line]
+        if vertical > 0:
+            msg.insert(vertical, "\u2551")
         print("".join(msg))
+
 
 def reflection(valley: list):
     rowlen = len(valley[0])
-    for seek in range(rowlen%2,rowlen-1,2):
-        is_mirror=[]
+    for seek in range(rowlen % 2, rowlen - 1, 2):
+        is_mirror = []
         for line in valley:
-            for dc in range(int((rowlen-seek)/2)):
-                is_mirror.append(line[seek+dc]==line[rowlen-dc-1])
+            for dc in range(int((rowlen - seek) / 2)):
+                is_mirror.append(line[seek + dc] == line[rowlen - dc - 1])
         if all(is_mirror):
-            return int(seek+(rowlen-seek)/2)
+            return int(seek + (rowlen - seek) / 2)
     return 0
 
+
 def transpose(valley: list):
-    trans=[]
+    trans = []
     for i in range(len(valley[0])):
-        trans.append(['']*len(valley))
-    
-    for y,line in enumerate(valley):
-        for x,value in enumerate(line):
-            trans[x][y]=value
+        trans.append([""] * len(valley))
+
+    for y, line in enumerate(valley):
+        for x, value in enumerate(line):
+            trans[x][y] = value
     return trans
 
-def flip(valley: list):
 
+def flip(valley: list):
     f = []
     for line in valley:
         f.append(line.copy())
@@ -56,28 +57,25 @@ def main():
             if line == "":
                 print(f"Valley {count}")
                 print("")
-                vertical = 0
-                horizontal = 0
                 vertical = reflection(valley)
-                if vertical == 0:
-                    vertical=len(valley[0])-reflection(flip(valley))
-                    if vertical == len(valley[0]):
-                        vertical = 0
+                if not vertical:
+                    if vertical := reflection(flip(valley)):
+                        vertical = len(valley[0]) - vertical
+
                 horizontal = reflection(transpose(valley))
-                if horizontal == 0:
-                    horizontal=len(valley)-reflection(flip(transpose(valley)))
-                    if horizontal == len(valley):
-                        horizontal = 0
-                printmap(valley,horizontal,vertical)
+                if not vertical and not horizontal:
+                    if horizontal := reflection(flip(transpose(valley))):
+                        horizontal = len(valley) - horizontal
+                printmap(valley, horizontal, vertical)
                 print("")
                 print(f"reflect vertical: {vertical} horizontal: {horizontal}")
                 print("")
 
-                mysum += vertical+100*horizontal
+                mysum += vertical + 100 * horizontal
                 valley = []
                 count += 1
             else:
-                valley.append([c for c in line if c in CHARS])
+                valley.append([c for c in line if c in {".", "#"}])
             line = reader.readline()
         print(f"part1: {mysum}")
 
