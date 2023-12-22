@@ -14,7 +14,7 @@ def printmap(valley: list, horizontal: int, vertical: int):
         print("".join(msg))
 
 
-def reflection(valley: list):
+def reflection(valley: list, flipped: bool):
     rowlen = len(valley[0])
     for seek in range(rowlen % 2, rowlen - 1, 2):
         is_mirror = []
@@ -22,7 +22,10 @@ def reflection(valley: list):
             for dc in range(int((rowlen - seek) / 2)):
                 is_mirror.append(line[seek + dc] == line[rowlen - dc - 1])
         if all(is_mirror):
-            return int((seek + rowlen) / 2)
+            if not flipped:
+                return int((seek + rowlen) / 2)
+            else:
+                return int((rowlen - seek) / 2)
     return 0
 
 
@@ -57,15 +60,8 @@ def main():
             if line == "":
                 print(f"Valley {count}")
                 print("")
-                vertical = reflection(valley)
-                if not vertical:
-                    if vertical := reflection(flip(valley)):
-                        vertical = len(valley[0]) - vertical
-
-                horizontal = reflection(transpose(valley))
-                if not vertical and not horizontal:
-                    if horizontal := reflection(flip(transpose(valley))):
-                        horizontal = len(valley) - horizontal
+                vertical = reflection(valley=valley,flipped=False) or reflection(valley=flip(valley),flipped=True)
+                horizontal = reflection(valley=transpose(valley),flipped=False) or reflection(valley=flip(transpose(valley)),flipped=True)
                 printmap(valley, horizontal, vertical)
                 print("")
                 print(f"reflect vertical: {vertical} horizontal: {horizontal}")
