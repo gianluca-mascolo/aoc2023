@@ -2,6 +2,43 @@
 
 TILES = {".", "/", "\\", "-", "|"}
 MOVE = {"R": (1, 0), "L": (-1, 0), "U": (0, -1), "D": (0, 1)}
+REFLECT = {
+    ".": {"R": {"R"}, "L": {"L"}, "U": {"U"}, "D": {"D"}},
+    "/": {"R": {"U"}, "L": {"D"}, "U": {"R"}, "D": {"L"}},
+    "\\": {"R": {"D"}, "L": {"U"}, "U": {"L"}, "D": {"R"}},
+    "-": {"R": {"R"}, "L": {"L"}, "U": {"L", "R"}, "D": {"L", "R"}},
+    "|": {"R": {"U", "D"}, "L": {"U", "D"}, "U": {"U"}, "D": {"D"}},
+}
+
+
+class Tile:
+    def __init__(self, kind: str):
+        self.kind = kind
+
+    def reflect(self, direction: str):
+        return REFLECT[self.kind][direction].copy()
+
+
+class TileMap:
+    def __init__(self):
+        self.map = []
+        self.rows = 0
+        self.cols = 0
+
+    def print(self):
+        for row in self.map:
+            print("".join([tile.kind for tile in row]))
+
+    def fence(self, x: int, y: int):
+        return x >= 0 and x < self.cols and y >= 0 and y < self.rows
+
+    def border(self):
+        b = []
+        b.extend([(x, 0, "D") for x in range(self.cols)])
+        b.extend([(x, self.rows - 1, "U") for x in range(self.cols)])
+        b.extend([(0, y, "R") for y in range(self.rows)])
+        b.extend([(self.cols - 1, y, "L") for y in range(self.rows)])
+        return b
 
 
 class Beam:
@@ -12,138 +49,78 @@ class Beam:
         self.direction = direction
 
     def __eq__(self, other):
-        return self.x == other.x and self.y == other.y and self.speed == other.speed and self.direction == other.direction
+        return (
+            self.x == other.x
+            and self.y == other.y
+            and self.speed == other.speed
+            and self.direction == other.direction
+        )
 
 
-class Tile:
-    def __init__(self, kind: str):
-        self.kind = kind
-        self.energized = False
-
-    def reflect(self, direction: str):
-        if self.kind == ".":
-            return {direction}
-        if self.kind == "/":
-            if direction == "R":
-                return {"U"}
-            elif direction == "L":
-                return {"D"}
-            elif direction == "U":
-                return {"R"}
-            elif direction == "D":
-                return {"L"}
-        if self.kind == "\\":
-            if direction == "R":
-                return {"D"}
-            elif direction == "L":
-                return {"U"}
-            elif direction == "U":
-                return {"L"}
-            elif direction == "D":
-                return {"R"}
-        if self.kind == "-":
-            if direction == "R" or direction == "L":
-                return {direction}
-            elif direction == "U" or direction == "D":
-                return {"L", "R"}
-        if self.kind == "|":
-            if direction == "U" or direction == "D":
-                return {direction}
-            elif direction == "L" or direction == "R":
-                return {"U", "D"}
-
-
-class TileMap:
-    def __init__(self, startbeam: Beam):
-        self.map = []
-        self.rows = 0
-        self.cols = 0
-        self.startbeam = startbeam
-
-    def print(self):
-        for row in self.map:
-            print("".join([tile.kind for tile in row]))
-
-    def printenergy(self):
-        for row in self.map:
-            print("".join([(".", "#")[tile.energized] for tile in row]))
-
-    def xray(self):
-        for ray, path in enumerate(self.beam):
-            print([(ray, b.x, b.y, b.speed, b.direction) for b in path])
+class BeamMap:
+    def __init__(self, grid: TileMap, start: Beam):
+        self.start = start
+        self.grid = grid
 
     def __iter__(self):
-        self.beam = [[self.startbeam]]
+        self.beam = [[self.start]]
         self.seen = set()
         return self
 
     def __next__(self):
         touch = set()
-        last_ray = []
-        for path in self.beam:
-            last_ray.append(path[-1])
-        for ray, last in enumerate(last_ray):
-            if last.speed > 0:
-                touch.add((last.x, last.y))
-                self.map[last.y][last.x].energized = True
-                delta = self.map[last.y][last.x].reflect(last.direction)
+        current_position = [path[-1] for path in self.beam]
+        for ray, current in enumerate(current_position):
+            if current.speed > 0:
+                touch.add((current.x, current.y))
+                delta = self.grid.map[current.y][current.x].reflect(current.direction)
             else:
                 delta = set()
-            if len(delta) == 1:
-                newdir = delta.pop()
-                dx, dy = MOVE[newdir]
-                if last.x + dx >= 0 and last.x + dx < self.cols and last.y + dy >= 0 and last.y + dy < self.rows and (last.x + dx, last.y + dy, newdir) not in self.seen:
-                    self.beam[ray].append(Beam(last.x + dx, last.y + dy, 1, newdir))
-                    self.seen.add((last.x + dx, last.y + dy, newdir))
+
+            for fork, new_direction in enumerate(delta):
+                r = ray
+                if fork > 0:
+                    self.beam.append(self.beam[ray].copy())
+                    r = -1
+                dx, dy = MOVE[new_direction]
+                x = current.x + dx
+                y = current.y + dy
+                if self.grid.fence(x, y) and (x, y, new_direction) not in self.seen:
+                    self.beam[r].append(Beam(x, y, 1, new_direction))
+                    self.seen.add((x, y, new_direction))
                 else:
-                    self.beam[ray][-1] = Beam(last.x, last.y, 0, last.direction)
-            elif len(delta) == 2:
-                self.beam.append(self.beam[ray].copy())
-                for r in [ray, -1]:
-                    newdir = delta.pop()
-                    dx, dy = MOVE[newdir]
-                    if last.x + dx >= 0 and last.x + dx < self.cols and last.y + dy >= 0 and last.y + dy < self.rows and (last.x + dx, last.y + dy, newdir) not in self.seen:
-                        self.beam[r].append(Beam(last.x + dx, last.y + dy, 1, newdir))
-                        self.seen.add((last.x + dx, last.y + dy, newdir))
-                    else:
-                        self.beam[r][-1] = Beam(last.x, last.y, 0, last.direction)
-        if all(r[-1].speed == 0 for r in self.beam):
+                    self.beam[r][-1] = Beam(x, y, 0, current.direction)
+        if all(r[-1].speed == 0 for r in self.beam) and not touch:
             raise StopIteration
         else:
             return touch
 
 
 def main():
-    grid = iter(TileMap(Beam(0, 0, 1, "R")))
-    with open("example", "r") as reader:
+    grid = TileMap()
+    with open("input", "r") as reader:
         y = 0
         line = reader.readline()
-        while line != "":  # The EOF char is an empty string
+        while line != "":
             grid.map.append([])
             line = line.rstrip()
             for x, c in enumerate(line):
                 if c in TILES:
                     grid.map[y].append(Tile(c))
-            # print(line)
             line = reader.readline()
             y += 1
     grid.rows = y
     grid.cols = x + 1
-    print("Original map\n")
-    grid.print()
-    print("")
-    for step in grid:
-        pass
-
-    print("Energized map\n")
-    grid.printenergy()
-    print("")
-    total = 0
-    for row in grid.map:
-        for tile in row:
-            if tile.energized:
-                total += 1
-    print(f"Energized tiles:  {total}")
+    beam_length = []
+    for beam_x, beam_y, beam_direction in grid.border():
+        beam = BeamMap(grid=grid, start=Beam(beam_x, beam_y, 1, beam_direction))
+        visited_tiles = set()
+        for step in beam:
+            visited_tiles |= step
+        if beam_x == 0 and beam_y == 0 and beam_direction == "R":
+            print(f"Part 1: {len(visited_tiles)}")
+        beam_length.append(len(visited_tiles))
+    print(f"Part 2: {max(beam_length)}")
 
 
 if __name__ == "__main__":
