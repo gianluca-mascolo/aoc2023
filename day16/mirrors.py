@@ -48,14 +48,6 @@ class Beam:
         self.speed = speed
         self.direction = direction
 
-    def __eq__(self, other):
-        return (
-            self.x == other.x
-            and self.y == other.y
-            and self.speed == other.speed
-            and self.direction == other.direction
-        )
-
 
 class BeamMap:
     def __init__(self, grid: TileMap, start: Beam):
