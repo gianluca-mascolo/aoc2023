@@ -60,3 +60,10 @@ x64 -autostart pluto.d64
 #### Automatically with a script on Linux
 
 `./compile.sh day01.bas`
+
+### Extracting PRG file from a disk
+
+```
+c1541 -attach day01.d64 -read day01 day01.prg
+petcat day01.prg
+```
