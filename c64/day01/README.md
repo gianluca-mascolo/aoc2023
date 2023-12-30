@@ -52,4 +52,4 @@ x64 -autostart pluto.d64
 
 ## Automatically with a script on Linux
 
-./compile.sh day01.bas
+`./compile.sh day01.bas`
