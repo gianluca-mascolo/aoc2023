@@ -2,9 +2,9 @@
 
 ## Screenshots
 
-![Screenshot of a COMMODORE64 that print the example input of advent of code 2023 day01.](screenshot.png)
+![Screenshot of a COMMODORE64 that print the example input of advent of code 2023 day01.](screenshot.png)  
 *Loading the example input and print it to screen*  
-![Screenshot of a COMMODORE64 that solve day01 of advent of code 2023.](solve01.png)
+![Screenshot of a COMMODORE64 that solve day01 of advent of code 2023.](solve01.png)  
 *Solving Advent of code day01 part 1 on Commodore 64 with `VICE`*  
 ## Requirements for Linux
 
