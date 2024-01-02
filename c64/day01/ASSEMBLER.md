@@ -65,6 +65,8 @@ READY.
 
 ```
 
+With this in mind a new solution can be written for [day01](https://adventofcode.com/2023/day/1) of aoc2023. The assembler code was [transformed](asm2data.sh) into `DATA` instructions to be `POKE`d directly into memory and attached directly to the `USR` function. The BASIC source code is [here](day01-assembler.bas) and you can try it out with `x64 -autostart ./day01-assembler.d64 `
+
 ## Cartridge
 
 Find and download `64MON by HANDIC SOFTWARE 1983` (filename: `handics_64mon.crt`)
