@@ -7,7 +7,7 @@
 
 ## Problem: the VAL function
 
-For the solution of the proposed advent of code you cannot use directly the VAL function because the value `0` is returned both from the "0" character and for any other character not in range "0"-"9". For example:
+For the solution of the proposed advent of code program you cannot use directly the VAL function because the value `0` is returned both from the "0" character and for any other character not in range "0"-"9". For example:
 ```
     **** COMMODORE 64 BASIC V2 ****
 
@@ -34,6 +34,12 @@ READY.
 Commodore 64 basic can leverage an user defined assembler function that accept a parameter (see [USR](https://www.c64-wiki.com/wiki/USR)).
 
 To create the function you have to write some assembler (or machine language code) into memory and indicate the memory address to call the function at addresses `785–786` (dec) or `$0311–$0312` (hex).
+
+## Solution: A custom VAL function
+
+By defining a custom `USR` function is possible to have a custom `VAL` function that return `-1` for all characters not in range "0"-"9" or the correct value. The [assembler code](day01-assembler.asm) was created using the `64MON` cartridge mentioned in *C64 Programmer reference*.  
+Because the value passed is loaded into [FAC](https://www.c64-wiki.com/wiki/FAC) (Floating Point Accumulator) the number is first converted using FACINX [routine](https://www.c64-wiki.com/wiki/Floating_point_arithmetic#Routines_for_converting_between_floating_point_and_other_formats) to store it as an integer, then compared with range boundaries for chars "0" and "9" to give you the result.
+
 ## Cartridge
 
 Find and download `64MON by HANDIC SOFTWARE 1983` (filename: `handics_64mon.crt`)
