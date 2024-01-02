@@ -3,8 +3,37 @@
 ## Screenshots
 
 ![Screenshot of a COMMODORE64 with assembler code on 64MON cartridge](day01-assembler.png)  
-*Dump of assembly code with 64MON cartridge*  
+*Dump of [assembly code](day01-assembler.asm) with 64MON cartridge*  
 
+## Problem: the VAL function
+
+For the solution of the proposed advent of code you cannot use directly the VAL function because the value `0` is returned both from the "0" character and for any other character not in range "0"-"9". For example:
+```
+    **** COMMODORE 64 BASIC V2 ****
+
+ 64K RAM SYSTEM  38911 BASIC BYTES FREE
+
+READY.
+PRINT VAL("Q")
+ 0
+
+READY.
+PRINT VAL("0")
+ 0
+
+READY.
+PRINT VAL("7")
+ 7
+
+READY.
+
+```
+
+## The USR function
+
+Commodore 64 basic can leverage an user defined assembler function that accept a parameter (see [USR](https://www.c64-wiki.com/wiki/USR)).
+
+To create the function you have to write some assembler (or machine language code) into memory and indicate the memory address to call the function at addresses `785–786` (dec) or `$0311–$0312` (hex).
 ## Cartridge
 
 Find and download `64MON by HANDIC SOFTWARE 1983` (filename: `handics_64mon.crt`)
