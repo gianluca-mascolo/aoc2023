@@ -35,10 +35,35 @@ Commodore 64 basic can leverage an user defined assembler function that accept a
 
 To create the function you have to write some assembler (or machine language code) into memory and indicate the memory address to call the function at addresses `785–786` (dec) or `$0311–$0312` (hex).
 
-## Solution: A custom VAL function
+## Solution: Custom VAL function
 
-By defining a custom `USR` function is possible to have a custom `VAL` function that return `-1` for all characters not in range "0"-"9" or the correct value. The [assembler code](day01-assembler.asm) was created using the `64MON` cartridge mentioned in *C64 Programmer reference*.  
-Because the value passed is loaded into [FAC](https://www.c64-wiki.com/wiki/FAC) (Floating Point Accumulator) the number is first converted using FACINX [routine](https://www.c64-wiki.com/wiki/Floating_point_arithmetic#Routines_for_converting_between_floating_point_and_other_formats) to store it as an integer, then compared with range boundaries for chars "0" and "9" to give you the result.
+By defining a custom `USR` function is possible to have a sort of custom `VAL` function that return `-1` for all characters not in range "0"-"9" or the correct value. The [assembler code](day01-assembler.asm) was created using the `64MON` cartridge mentioned in *C64 Programmer reference*.  
+Because the value passed is loaded into [FAC](https://www.c64-wiki.com/wiki/FAC) (Floating Point Accumulator) the number is first converted using FACINX [routine](https://www.c64-wiki.com/wiki/Floating_point_arithmetic#Routines_for_converting_between_floating_point_and_other_formats) to store it as an integer, then compared with range boundaries for chars "0" and "9" to give you the result. For example:
+
+```
+C$="0"
+
+READY.
+PRINT USR(ASC(C$))
+ 0
+
+READY.
+C$="Z"
+
+READY.
+PRINT USR(ASC(C$))
+-1
+
+READY.
+C$="4"
+
+READY.
+PRINT USR(ASC(C$))
+ 4
+
+READY.
+
+```
 
 ## Cartridge
 
